@@ -25,9 +25,10 @@ export const searchWord = (word: string) => {
       }
     );
 
-    dispatch<SearchWord>({
-      type: ActionTypes.searchWord,
-      payload: response.data,
-    });
+
+      dispatch<SearchWord>({
+          type: ActionTypes.searchWord,
+          payload: response.data,
+      });
   };
 };

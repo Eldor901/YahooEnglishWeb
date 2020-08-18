@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Field, reduxForm } from "redux-form";
+import {Field, formValues, reduxForm} from "redux-form";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -14,16 +14,17 @@ interface Props {
   handleSubmit: any;
   classes: any;
   searchWord: typeof searchWord;
-  Word: Word | string ;
+  Word: Array<object> | string;
 }
-
 
 class Dictionary extends Component<Props> {
 
   constructor(props: Props) {
     super(props);
+  }
 
-    this.state = {Word: ""};
+  componentDidMount(): void {
+    this.props.searchWord("word");
   }
 
 
@@ -51,7 +52,7 @@ class Dictionary extends Component<Props> {
   };
 
   onSubmit= async (formValue: any) => {
-      this.props.searchWord(formValue.Search);
+    this.props.searchWord(formValue.Search);
   };
 
   render() {
@@ -83,9 +84,10 @@ class Dictionary extends Component<Props> {
         </Grid>
         <Grid item md={6} xs={12} style={{ paddingLeft: "15px" }}>
           <h1>Look at examples </h1>
-          <p className={classes.moreInfoContent} >
-            {this.props.Word ? <FoundWord Word={this.props.Word}/> :  null}
+          <p className={classes.moreInfoContent}  style={{}}>
+            {this.props.Word.length > 0 ? <FoundWord Word={this.props.Word}/> :  <h5> Word not found</h5>}
           </p>
+
         </Grid>
       </Grid>
     );
@@ -114,6 +116,8 @@ const useStyles = (theme: Theme) => ({
     '& .MuiInput-underline:after': {
       borderBottomColor: '#00b2bf',
     },
+
+
   },
 
   searchButton: {
@@ -125,14 +129,31 @@ const useStyles = (theme: Theme) => ({
   moreInfoContent: {
     [theme.breakpoints.up('md')]: {
       overflowY: 'scroll',
-      height: "500px"
+      height: "600px",
     },
+
+    '&::-webkit-scrollbar': {
+      width: '0.4em'
+    },
+
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 5px grey',
+      borderRadius: "10px",
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#00b2bf',
+      outline: '1px solid slategrey'
+    }
+
   },
 
 });
 
 const mapStateToProps = (state: StoreState) =>{
-  return {Word: state.Word}
+  return {
+    Word: state.Word,
+  }
 };
 
 export default connect(mapStateToProps, {
